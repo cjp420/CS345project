@@ -152,7 +152,8 @@ String let() #FunctionApplication :
    | b = atom() {t += b;}
   )
   <RPAR>
-  <RPAR>
+  <RPAR>ymbol: y
+
   //C
   c = list()   {s += c+"))";}
 
