@@ -1,0 +1,186 @@
+options{
+	MULTI=true;
+	VISITOR=true;
+	KEEP_LINE_COLUMN = false;
+	NODE_USES_PARSER=true;
+}
+
+
+PARSER_BEGIN(Parser)
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Parser {
+ public static void main(String args[]) throws ParseException {
+   Parser parser = new Parser (System.in);
+   parser.prog();
+   ASTprog root = (ASTprog)jjtree.rootNode();
+   Object data = (Object)false;
+   PrintVisitor print = new PrintVisitor();
+   print.visit(root, data);
+ }
+}
+
+PARSER_END(Parser)
+
+SKIP:
+{
+   " "
+ | "\t"
+ | "\n"
+ | "\r"
+ | <"%" (~["\n","\r"])* ("\n"|"\r")>
+}
+
+TOKEN:
+{
+   < NIL : ["N","n"] ["I","i"] ["L","l"] >
+}
+
+TOKEN:
+{
+   < LPAR : "(" >
+ | < RPAR : ")" >
+ | < INTEGER : (["0"-"9"])+ | "-" (["0"-"9"])+ >
+ | < LAMBDA : "lambda">
+ | < LET : "let">
+ | < ADD : "+">
+ | < SUB : "-">
+ | < MUL : "*">
+ | < DIV : "/">
+ | < SYMBOL : ["a"-"z", "A"-"Z", "~", "`", "!", "@", "#", "$", "/", "^", "&",
+           	"*", "_", "-", "=", "+", "{", "}", "[", "]", "|", "\\", ":",
+           	";", "<", ">", ",", ".", "?", "'", "\""](["a"-"z", "A"-"Z",
+           	"0"-"9", "~", "`", "!", "@", "#", "$", "/", "^", "&", "*", "_",
+           	"-", "=", "+", "{", "}", "[", "]", "|", "\\", ":", ";", "<",
+           	">", ",", ".", "?", "'", "\""])* >
+
+}
+
+TOKEN:
+{
+ < ERROR : ~[] >
+}
+
+String atom() #void :
+{ Token n; String l, h; }
+{
+   l = integer() {return l;}
+ | l = symbol() {return l;}
+ | l = let() {return l;}
+ | l = lambda() {return l;}
+ | l = addition() {return l;}
+ | l = subtraction() {return l;}
+ | l = multiplication() {return l;}
+ | l = division() {return l;}
+}
+
+String integer():
+{Token n;}
+{
+	n = <INTEGER> {jjtThis.setNum(Integer.parseInt(n.image));}
+	{ return "(num " + n.image+")"; } 
+}
+
+String symbol():
+{Token n;}
+{
+	n = <SYMBOL> {jjtThis.setName(n.image);}
+	{ return "(id '" + n.image+")"; }
+}
+
+String addition() #Addition :
+{Token n;}
+{
+	n = <ADD>
+	{return "add";}
+}
+
+String subtraction() #Subtraction:
+{Token n;}
+{
+ 	n = <SUB>
+ 	{return "sub";}    
+}
+
+String multiplication() #Multiplication :
+{Token n;}
+{
+	n = <MUL>
+	{return "mul";}    
+}
+
+String division() #Division :
+{Token n;}
+{
+	n = <DIV>
+	{return "div";}
+}
+
+String list() #void :
+{
+ String s;
+ String ret="";
+}
+{
+ {ret+="(";}
+ <LPAR>
+ (
+   LOOKAHEAD(2) s =  list() { ret += s; }
+   | s = atom() { ret += s; }
+ )*
+ <RPAR>
+ {
+   ret+=")";
+   return ret;
+ }
+}
+
+
+String let() #FunctionApplication :
+{String a, b, c; Token c1, c2; String s = ""; String t = "";}
+{
+  <LET>
+  <LPAR>
+  <LPAR>
+  //A
+  a = symbol() {s += "(app(fun '"+a;}
+  //B
+  (LOOKAHEAD(2) b = list() {t += b;}
+   | b = atom() {t += b;}
+  )
+  <RPAR>
+  <RPAR>
+  //C
+  c = list()   {s += c+"))";}
+
+ {
+   return s + t;
+ }
+}
+
+String lambda() #Function :
+{String a, b;}
+{
+ <LAMBDA>
+ <LPAR>
+ a = atom()
+ <RPAR>
+  (LOOKAHEAD(2) b = list()
+ | b = atom()
+   )
+   {return "(fun '"+a+b+")";}
+}
+
+void prog() :
+{
+ String s;
+}
+{
+ (
+ 	LOOKAHEAD(2) s = list() { System.out.println(s); }
+   | s = atom() { System.out.println(s); }
+ )*
+}

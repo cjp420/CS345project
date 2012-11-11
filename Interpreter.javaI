@@ -1,0 +1,29 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+String ast;
+String env;
+public class Interpreter
+{
+	public static void Eval (String ast, String env)
+		{
+			//Substitute
+			String expr = Subst(ast, env);
+			//Evaluate expr
+			//Check if expr is valid here or in Subst
+		}
+	
+	public static void AST (string ast)
+		{
+			//Figure out nodes
+			//If classes, use ToString functions in those classes
+			//If not, just print out the ast string?
+		}
+	public static String Subst(String ast, String env)
+		{
+			//Work with abstract syntax to cut it down into something without variables that can be evaluated
+		}
+}
+
+public class Environment
