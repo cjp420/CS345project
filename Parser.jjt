@@ -37,29 +37,31 @@ SKIP:
  | <"%" (~["\n","\r"])* ("\n"|"\r")>
 }
 
-TOKEN:
-{
-   < NIL : ["N","n"] ["I","i"] ["L","l"] >
-}
 
 TOKEN:
 {
    < LPAR : "(" >
  | < RPAR : ")" >
- | < INTEGER : (["0"-"9"])+ | "-" (["0"-"9"])+ >
+ | < NUMBER : (["0"-"9"])+ | "-" (["0"-"9"])+ >
  | < LAMBDA : "lambda">
  | < LET : "let">
  | < ADD : "+">
  | < SUB : "-">
  | < MUL : "*">
  | < DIV : "/">
+ | < AADD : "add" >
+ | < ASUB : "sub" >
+ | < AMUL : "mul" >
+ | < ADIV : "div" >
+ | < ASUB : "aSub" >
+ | < CLOSURE : "closure" >
+ | < MTSUB : "mtSub" >
  | < SYMBOL : ["a"-"z", "A"-"Z", "~", "`", "!", "@", "#", "$", "/", "^", "&",
            	"*", "_", "-", "=", "+", "{", "}", "[", "]", "|", "\\", ":",
            	";", "<", ">", ",", ".", "?", "'", "\""](["a"-"z", "A"-"Z",
            	"0"-"9", "~", "`", "!", "@", "#", "$", "/", "^", "&", "*", "_",
            	"-", "=", "+", "{", "}", "[", "]", "|", "\\", ":", ";", "<",
            	">", ",", ".", "?", "'", "\""])* >
-
 }
 
 TOKEN:
@@ -74,12 +76,13 @@ String atom() #void :
  | l = symbol() {return l;}
  | l = let() {return l;}
  | l = lambda() {return l;}
+ | substitutions() {return null}
 }
 
-String integer():
+String number():
 {Token n;}
 {
-	n = <INTEGER> {jjtThis.setNum(Integer.parseInt(n.image));}
+	n = <NUMBER> {jjtThis.setNum(Integer.parseInt(n.image));}
 	{ return "(num " + n.image+")"; } 
 }
 
@@ -198,6 +201,44 @@ String lambda() #Function :
  | b = atom()
    )
    {return "(fun '"+a+b+")";}
+}
+
+void asub() :
+{}
+{
+    LOOKAHEAD(3)
+    <ASUB> symbol() integer() (asub() | <MTSUB>)
+  | <ASUB> symbol() <LPAR> closure() <RPAR> (asub() | <MTSUB>)
+}
+
+void closure() :
+{}
+{
+    <CLOSURE> params() <LPAR> fbody() <RPAR> asub()
+}
+
+void params() :
+{}
+{
+    (symbol())+
+}
+
+void fbody() :
+{}
+{
+    expr()
+}
+
+void expr() :
+{}
+{
+   <LPAR> aOp()(symbol() | number() | expr()) (symbol() | integer() | expr()) <RPAR>
+}
+
+void aOp() :
+{}
+{
+    <AADD> | <ASUB> | <ADIV> | <AMUL>
 }
 
 void prog() :
