@@ -9,6 +9,11 @@ class ASTsymbol extends SimpleNode {
     name = l;
   }
 
+  public String getName()
+  {
+	return name;
+  }
+
   public ASTsymbol(int id) {
     super(id);
   }

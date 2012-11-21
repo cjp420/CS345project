@@ -18,8 +18,11 @@ public class Parser {
    parser.prog();
    ASTprog root = (ASTprog)jjtree.rootNode();
    Object data = (Object)false;
+   boolean b = true;
    PrintVisitor print = new PrintVisitor();
    print.visit(root, data);
+   EVisitor eprint = new EVisitor();
+   eprint.visit(root, data, b);
  }
 }
 
@@ -71,10 +74,6 @@ String atom() #void :
  | l = symbol() {return l;}
  | l = let() {return l;}
  | l = lambda() {return l;}
- | l = addition() {return l;}
- | l = subtraction() {return l;}
- | l = multiplication() {return l;}
- | l = division() {return l;}
 }
 
 String integer():
@@ -91,32 +90,56 @@ String symbol():
 	{ return "(id '" + n.image+")"; }
 }
 
-String addition() #Addition :
-{Token n;}
+String numexp() #void : 
+{Token n; String r;}
 {
-	n = <ADD>
-	{return "add";}
+	  r = addition() {return r;}
+	| r = subtraction() {return r;}
+	| r = multiplication() {return r;}
+	| r = division() {return r;}
+}
+String addition() #Addition :
+{Token n; String r;String s = "";}
+{
+	  n = <ADD> {s += n.image;}
+	  (LOOKAHEAD(2) r = list() {s+= r;}
+   	| r = atom() {s += r;})
+	  (LOOKAHEAD(2)r = list() {s+= r;}
+   	| r = atom() {s += r;})+
+	{return s;}
 }
 
 String subtraction() #Subtraction:
-{Token n;}
+{Token n; String r;String s = "";}
 {
- 	n = <SUB>
- 	{return "sub";}    
+ 	n = <SUB> {s += n.image;}
+	 (LOOKAHEAD(2) r = list() {s+= r;}
+   	| r = atom() {s += r;})
+	  (LOOKAHEAD(2) r = list() {s+= r;}
+   	| r = atom() {s += r;})+
+ 	{return s;}    
 }
 
 String multiplication() #Multiplication :
-{Token n;}
+{Token n; String r;String s = "";}
 {
-	n = <MUL>
-	{return "mul";}    
+	n = <MUL> {s += n.image;}
+	 (LOOKAHEAD(2) r = list() {s+= r;}
+   	| r = atom() {s += r;})
+	  (LOOKAHEAD(2) r = list() {s+= r;}
+   	| r = atom() {s += r;})+
+	{return s;}    
 }
 
 String division() #Division :
-{Token n;}
+{Token n; String r;String s = "";}
 {
-	n = <DIV>
-	{return "div";}
+	n = <DIV> {s += n.image;}
+	 (LOOKAHEAD(2)r = list() {s+= r;}
+   	| r = atom() {s += r;})
+	  (LOOKAHEAD(2)r = list() {s+= r;}
+   	| r = atom() {s += r;})+
+	{return s;}
 }
 
 String list() #void :
@@ -129,6 +152,7 @@ String list() #void :
  <LPAR>
  (
    LOOKAHEAD(2) s =  list() { ret += s; }
+   | s = numexp() {ret += s;}
    | s = atom() { ret += s; }
  )*
  <RPAR>
@@ -152,7 +176,7 @@ String let() #FunctionApplication :
    | b = atom() {t += b;}
   )
   <RPAR>
-  <RPAR>ymbol: y
+  <RPAR>
 
   //C
   c = list()   {s += c+"))";}
@@ -170,6 +194,7 @@ String lambda() #Function :
  a = atom()
  <RPAR>
   (LOOKAHEAD(2) b = list()
+ | b = numexp()
  | b = atom()
    )
    {return "(fun '"+a+b+")";}

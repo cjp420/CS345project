@@ -12,6 +12,11 @@ class ASTinteger extends SimpleNode {
 
   private int num;
 
+  public int getNum()
+  {
+	return num;
+  }
+
   public void setNum(int i)
   {
     num = i;

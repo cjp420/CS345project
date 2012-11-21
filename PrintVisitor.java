@@ -40,6 +40,13 @@ data = node.childrenAccept(this, data);
 --indent;
 return data;
 }
+  public Object visit(ASTNumExp node, Object data){
+System.out.println(indentString() + node);
+++indent;
+data = node.childrenAccept(this, data);
+--indent;
+return data;
+}
   public Object visit(ASTSubtraction node, Object data){
 System.out.println(indentString() + node);
 ++indent;
