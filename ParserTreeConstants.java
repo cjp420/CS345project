@@ -2,7 +2,7 @@
 public interface ParserTreeConstants
 {
   public int JJTVOID = 0;
-  public int JJTINTEGER = 1;
+  public int JJTNUMBER = 1;
   public int JJTSYMBOL = 2;
   public int JJTADDITION = 3;
   public int JJTSUBTRACTION = 4;
@@ -10,12 +10,20 @@ public interface ParserTreeConstants
   public int JJTDIVISION = 6;
   public int JJTFUNCTIONAPPLICATION = 7;
   public int JJTFUNCTION = 8;
-  public int JJTPROG = 9;
+  public int JJTAPPLICATION = 9;
+  public int JJTASUB = 10;
+  public int JJTMTSUB = 11;
+  public int JJTCLOSURE = 12;
+  public int JJTPARAMS = 13;
+  public int JJTFBODY = 14;
+  public int JJTEXPR = 15;
+  public int JJTAOP = 16;
+  public int JJTPROG = 17;
 
 
   public String[] jjtNodeName = {
     "void",
-    "integer",
+    "number",
     "symbol",
     "Addition",
     "Subtraction",
@@ -23,7 +31,15 @@ public interface ParserTreeConstants
     "Division",
     "FunctionApplication",
     "Function",
+    "application",
+    "asub",
+    "mtsub",
+    "closure",
+    "params",
+    "fbody",
+    "expr",
+    "aOp",
     "prog",
   };
 }
-/* JavaCC - OriginalChecksum=0b43a51e10d4d00f17b921a28cb9bce0 (do not edit this line) */
+/* JavaCC - OriginalChecksum=02820f5701351a18bb7f140e1385982f (do not edit this line) */

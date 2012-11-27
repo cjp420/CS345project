@@ -2,7 +2,7 @@
 public interface ParserVisitor
 {
   public Object visit(SimpleNode node, Object data);
-  public Object visit(ASTinteger node, Object data);
+  public Object visit(ASTnumber node, Object data);
   public Object visit(ASTsymbol node, Object data);
   public Object visit(ASTAddition node, Object data);
   public Object visit(ASTSubtraction node, Object data);
@@ -10,6 +10,14 @@ public interface ParserVisitor
   public Object visit(ASTDivision node, Object data);
   public Object visit(ASTFunctionApplication node, Object data);
   public Object visit(ASTFunction node, Object data);
+  public Object visit(ASTapplication node, Object data);
+  public Object visit(ASTasub node, Object data);
+  public Object visit(ASTmtsub node, Object data);
+  public Object visit(ASTclosure node, Object data);
+  public Object visit(ASTparams node, Object data);
+  public Object visit(ASTfbody node, Object data);
+  public Object visit(ASTexpr node, Object data);
+  public Object visit(ASTaOp node, Object data);
   public Object visit(ASTprog node, Object data);
 }
-/* JavaCC - OriginalChecksum=53af52fb1131c7c9aacf5250b2f8bc58 (do not edit this line) */
+/* JavaCC - OriginalChecksum=18a4615017ad6492f04fdadcaf86b2e4 (do not edit this line) */

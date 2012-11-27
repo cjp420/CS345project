@@ -50,7 +50,8 @@ TOKEN:
  | < MUL : "*">
  | < DIV : "/">
  | < AADD : "add" >
- | < ASUB : "sub" >
+ | < ASUBT : "sub" >
+ | < APP : "app" >
  | < AMUL : "mul" >
  | < ADIV : "div" >
  | < ASUB : "aSub" >
@@ -72,11 +73,11 @@ TOKEN:
 String atom() #void :
 { Token n; String l, h; }
 {
-   l = integer() {return l;}
+   l = number() {return l;}
  | l = symbol() {return l;}
  | l = let() {return l;}
  | l = lambda() {return l;}
- | substitutions() {return null}
+ | application() asub() {return null;}
 }
 
 String number():
@@ -202,13 +203,24 @@ String lambda() #Function :
    )
    {return "(fun '"+a+b+")";}
 }
+//void application() :
+//{}
+//{
+//    <LPAR> symbol() expr() <RPAR>
+//}
 
 void asub() :
 {}
 {
-    LOOKAHEAD(3)
-    <ASUB> symbol() integer() (asub() | <MTSUB>)
-  | <ASUB> symbol() <LPAR> closure() <RPAR> (asub() | <MTSUB>)
+    LOOKAHEAD(4)
+    <LPAR> <ASUB> symbol() number() (asub() | mtsub()) <RPAR>
+  | <LPAR> <ASUB> symbol() <LPAR> closure() <RPAR> (asub() | mtsub()) <RPAR>
+}
+
+void mtsub() :
+{}
+{
+    <MTSUB>
 }
 
 void closure() :
@@ -232,13 +244,18 @@ void fbody() :
 void expr() :
 {}
 {
-   <LPAR> aOp()(symbol() | number() | expr()) (symbol() | integer() | expr()) <RPAR>
+   <LPAR> aOp()(symbol() | number() | expr() | application()) (symbol() | number() | expr() | application()) <RPAR>
 }
 
 void aOp() :
 {}
 {
-    <AADD> | <ASUB> | <ADIV> | <AMUL>
+    <AADD>  {jjtThis.setOp(0);}
+  | <ASUBT> {jjtThis.setOp(1);}
+  | <ADIV>  {jjtThis.setOp(2);}
+  | <AMUL>  {jjtThis.setOp(3);}
+  | <APP>   {jjtThis.setOp(4);}
+
 }
 
 void prog() :

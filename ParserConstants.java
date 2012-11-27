@@ -9,29 +9,41 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int NIL = 6;
+  int LPAR = 6;
   /** RegularExpression Id. */
-  int LPAR = 7;
+  int RPAR = 7;
   /** RegularExpression Id. */
-  int RPAR = 8;
+  int NUMBER = 8;
   /** RegularExpression Id. */
-  int INTEGER = 9;
+  int LAMBDA = 9;
   /** RegularExpression Id. */
-  int LAMBDA = 10;
+  int LET = 10;
   /** RegularExpression Id. */
-  int LET = 11;
+  int ADD = 11;
   /** RegularExpression Id. */
-  int ADD = 12;
+  int SUB = 12;
   /** RegularExpression Id. */
-  int SUB = 13;
+  int MUL = 13;
   /** RegularExpression Id. */
-  int MUL = 14;
+  int DIV = 14;
   /** RegularExpression Id. */
-  int DIV = 15;
+  int AADD = 15;
   /** RegularExpression Id. */
-  int SYMBOL = 16;
+  int ASUBT = 16;
   /** RegularExpression Id. */
-  int ERROR = 17;
+  int AMUL = 17;
+  /** RegularExpression Id. */
+  int ADIV = 18;
+  /** RegularExpression Id. */
+  int ASUB = 19;
+  /** RegularExpression Id. */
+  int CLOSURE = 20;
+  /** RegularExpression Id. */
+  int MTSUB = 21;
+  /** RegularExpression Id. */
+  int SYMBOL = 22;
+  /** RegularExpression Id. */
+  int ERROR = 23;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -44,16 +56,22 @@ public interface ParserConstants {
     "\"\\n\"",
     "\"\\r\"",
     "<token of kind 5>",
-    "<NIL>",
     "\"(\"",
     "\")\"",
-    "<INTEGER>",
+    "<NUMBER>",
     "\"lambda\"",
     "\"let\"",
     "\"+\"",
     "\"-\"",
     "\"*\"",
     "\"/\"",
+    "\"add\"",
+    "\"sub\"",
+    "\"mul\"",
+    "\"div\"",
+    "\"aSub\"",
+    "\"closure\"",
+    "\"mtSub\"",
     "<SYMBOL>",
     "<ERROR>",
   };
