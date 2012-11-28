@@ -23,6 +23,24 @@ public class FunctionInfo {
         body = null;
         vars = new HashMap();
     }
+    
+    public boolean hasParam(String p) {
+        if(params.contains(p)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public boolean hasVar(String v) {
+        if(vars.containsKey(v)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     public void addParam(String p) {
         params.add(p);

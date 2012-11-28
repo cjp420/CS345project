@@ -70,16 +70,6 @@ TOKEN:
  < ERROR : ~[] >
 }
 
-String atom() #void :
-{ Token n; String l, h; }
-{
-   l = number() {return l;}
- | l = symbol() {return l;}
- | l = let() {return l;}
- | l = lambda() {return l;}
- | application() asub() {return null;}
-}
-
 String number():
 {Token n;}
 {
@@ -97,11 +87,27 @@ String symbol():
 String numexp() #void : 
 {Token n; String r;}
 {
-	  r = addition() {return r;}
-	| r = subtraction() {return r;}
-	| r = multiplication() {return r;}
-	| r = division() {return r;}
+	
+
+        LOOKAHEAD(2) <LPAR> Op()(symbol() | number() | numexp()) (symbol() | number() | numexp()) <RPAR>
+      |  <LPAR> apply() <RPAR>
 }
+
+void op() :
+{}
+{
+         <ADD>  {jjtThis.setOp(0);}
+	| <SUB> {jjtThis.setOp(1);}
+	| <DIV> {jjtThis.setOp(2);}
+	| <MUL> {jjtThis.setOp(3);}     
+}
+
+void apply() :
+{}
+{
+    symbol() (symbol() | number() | numexpr()) 
+}
+
 String addition() #Addition :
 {Token n; String r;String s = "";}
 {
@@ -146,68 +152,43 @@ String division() #Division :
 	{return s;}
 }
 
-String list() #void :
-{
- String s;
- String ret="";
-}
-{
- {ret+="(";}
- <LPAR>
- (
-   LOOKAHEAD(2) s =  list() { ret += s; }
-   | s = numexp() {ret += s;}
-   | s = atom() { ret += s; }
- )*
- <RPAR>
- {
-   ret+=")";
-   return ret;
- }
-}
 
 
-String let() #FunctionApplication :
-{String a, b, c; Token c1, c2; String s = ""; String t = "";}
+
+void let() #FunctionApplication :
+{}
 {
+  <LPAR>
   <LET>
   <LPAR>
   <LPAR>
-  //A
-  a = symbol() {s += "(app(fun '"+a;}
-  //B
-  (LOOKAHEAD(2) b = list() {t += b;}
-   | b = atom() {t += b;}
-  )
+  //  A                  B
+   symbol() (number() | lambda()) 
   <RPAR>
   <RPAR>
-
   //C
-  c = list()   {s += c+"))";}
-
- {
-   return s + t;
- }
+  (let() | apply())
+  <RPAR>
 }
 
-String lambda() #Function :
-{String a, b;}
+void lambda() #Function :
+{}
 {
+ <LPAR>
  <LAMBDA>
  <LPAR>
- a = atom()
+ symbol()
  <RPAR>
-  (LOOKAHEAD(2) b = list()
- | b = numexp()
- | b = atom()
-   )
-   {return "(fun '"+a+b+")";}
+   number()
+ | numexp()
+ | symbol()
 }
-//void application() :
-//{}
-//{
-//    <LPAR> symbol() expr() <RPAR>
-//}
+
+void application() :
+{}
+{
+    <LPAR> symbol() number() <RPAR>
+}
 
 void asub() :
 {}
@@ -220,7 +201,7 @@ void asub() :
 void mtsub() :
 {}
 {
-    <MTSUB>
+    <LPAR> <MTSUB> <RPAR>
 }
 
 void closure() :
@@ -244,7 +225,7 @@ void fbody() :
 void expr() :
 {}
 {
-   <LPAR> aOp()(symbol() | number() | expr() | application()) (symbol() | number() | expr() | application()) <RPAR>
+   <LPAR> aOp()(symbol() | number() | expr()) (symbol() | number() | expr()) <RPAR>
 }
 
 void aOp() :
@@ -263,8 +244,7 @@ void prog() :
  String s;
 }
 {
- (
- 	LOOKAHEAD(2) s = list() { System.out.println(s); }
-   | s = atom() { System.out.println(s); }
- )*
+    LOOKAHEAD(2) <LPAR> application() asub() <RPAR> 
+  | let()
+    
 }
