@@ -31,7 +31,7 @@ public class ASTnumber extends SimpleNode {
 
     @Override
     public String toString() {
-        return "Number: " + num;
+        return "" + num;
     }
 }
 /* JavaCC - OriginalChecksum=896cc88eaf029bb6c0f8ec0d9801b133 (do not edit this line) */

@@ -29,7 +29,7 @@ class ASTsymbol extends SimpleNode {
   }
 
    public String toString() {
-  return "Symbol: " + name;
+  return name;
 }
 }
 /* JavaCC - OriginalChecksum=2e8114ee45d069f5bb5ce552e9ac3016 (do not edit this line) */

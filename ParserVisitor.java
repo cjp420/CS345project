@@ -4,10 +4,6 @@ public interface ParserVisitor
   public Object visit(SimpleNode node, Object data);
   public Object visit(ASTnumber node, Object data);
   public Object visit(ASTsymbol node, Object data);
-  public Object visit(ASTAddition node, Object data);
-  public Object visit(ASTSubtraction node, Object data);
-  public Object visit(ASTMultiplication node, Object data);
-  public Object visit(ASTDivision node, Object data);
   public Object visit(ASTFunctionApplication node, Object data);
   public Object visit(ASTFunction node, Object data);
   public Object visit(ASTapplication node, Object data);

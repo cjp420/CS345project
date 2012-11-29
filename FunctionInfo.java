@@ -14,7 +14,7 @@ public class FunctionInfo {
 
     private String name;
     private ArrayList<String> params;
-    private SimpleNode body;
+    private ASTexpr body;
     private HashMap<String, Float> vars;
     
     public FunctionInfo(String n) {
@@ -58,14 +58,14 @@ public class FunctionInfo {
         return vars.get(var).floatValue();
     }
     
-    public SimpleNode getBody() {
+    public ASTexpr getBody() {
         return body;
     }
     public int numParams() {
         return params.size();
     }
     
-    public void setBody(SimpleNode n) {
+    public void setBody(ASTexpr n) {
         body = n;
     }
 }

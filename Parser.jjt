@@ -108,53 +108,6 @@ void apply() :
     symbol() (symbol() | number() | numexpr()) 
 }
 
-String addition() #Addition :
-{Token n; String r;String s = "";}
-{
-	  n = <ADD> {s += n.image;}
-	  (LOOKAHEAD(2) r = list() {s+= r;}
-   	| r = atom() {s += r;})
-	  (LOOKAHEAD(2)r = list() {s+= r;}
-   	| r = atom() {s += r;})+
-	{return s;}
-}
-
-String subtraction() #Subtraction:
-{Token n; String r;String s = "";}
-{
- 	n = <SUB> {s += n.image;}
-	 (LOOKAHEAD(2) r = list() {s+= r;}
-   	| r = atom() {s += r;})
-	  (LOOKAHEAD(2) r = list() {s+= r;}
-   	| r = atom() {s += r;})+
- 	{return s;}    
-}
-
-String multiplication() #Multiplication :
-{Token n; String r;String s = "";}
-{
-	n = <MUL> {s += n.image;}
-	 (LOOKAHEAD(2) r = list() {s+= r;}
-   	| r = atom() {s += r;})
-	  (LOOKAHEAD(2) r = list() {s+= r;}
-   	| r = atom() {s += r;})+
-	{return s;}    
-}
-
-String division() #Division :
-{Token n; String r;String s = "";}
-{
-	n = <DIV> {s += n.image;}
-	 (LOOKAHEAD(2)r = list() {s+= r;}
-   	| r = atom() {s += r;})
-	  (LOOKAHEAD(2)r = list() {s+= r;}
-   	| r = atom() {s += r;})+
-	{return s;}
-}
-
-
-
-
 void let() #FunctionApplication :
 {}
 {
@@ -187,7 +140,7 @@ void lambda() #Function :
 void application() :
 {}
 {
-    <LPAR> symbol() number() <RPAR>
+    <LPAR> symbol() (number() | symbol()) <RPAR>
 }
 
 void asub() :
