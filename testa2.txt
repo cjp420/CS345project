@@ -1,0 +1,1 @@
+(d/dx 10.0 )(aSub d/dx(closure x (mul (sub (app f (add x H ))(app f x ))H )(aSub f(closure x (div x x )(aSub H 0.0010 (mtSub)))(aSub H 0.0010 (mtSub))))(aSub f(closure x (div x x )(aSub H 0.0010 (mtSub)))(aSub H 0.0010 (mtSub))))

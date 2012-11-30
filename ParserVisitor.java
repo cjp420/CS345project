@@ -4,6 +4,8 @@ public interface ParserVisitor
   public Object visit(SimpleNode node, Object data);
   public Object visit(ASTnumber node, Object data);
   public Object visit(ASTsymbol node, Object data);
+  public Object visit(ASTop node, Object data);
+  public Object visit(ASTApp node, Object data);
   public Object visit(ASTFunctionApplication node, Object data);
   public Object visit(ASTFunction node, Object data);
   public Object visit(ASTapplication node, Object data);
@@ -16,4 +18,4 @@ public interface ParserVisitor
   public Object visit(ASTaOp node, Object data);
   public Object visit(ASTprog node, Object data);
 }
-/* JavaCC - OriginalChecksum=18a4615017ad6492f04fdadcaf86b2e4 (do not edit this line) */
+/* JavaCC - OriginalChecksum=5bfa4589543df07e0dffb96c441d58b0 (do not edit this line) */

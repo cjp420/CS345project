@@ -27,8 +27,7 @@ public class PrintVisitor implements ParserVisitor {
         --indent;
         return data;
     }
-
-    public Object visit(ASTsymbol node, Object data) {
+    public Object visit(ASTnumexp node, Object data) {
         System.out.println(indentString() + node);
         ++indent;
         data = node.childrenAccept(this, data);
@@ -36,7 +35,7 @@ public class PrintVisitor implements ParserVisitor {
         return data;
     }
 
-    public Object visit(ASTNumExp node, Object data) {
+    public Object visit(ASTsymbol node, Object data) {
         System.out.println(indentString() + node);
         ++indent;
         data = node.childrenAccept(this, data);
@@ -53,6 +52,21 @@ public class PrintVisitor implements ParserVisitor {
     }
 
     public Object visit(ASTFunction node, Object data) {
+        System.out.println(indentString() + node);
+        ++indent;
+        data = node.childrenAccept(this, data);
+        --indent;
+        return data;
+    }
+
+	public Object visit(ASTApp node, Object data) {
+        System.out.println(indentString() + node);
+        ++indent;
+        data = node.childrenAccept(this, data);
+        --indent;
+        return data;
+    }
+	public Object visit(ASTop node, Object data) {
         System.out.println(indentString() + node);
         ++indent;
         data = node.childrenAccept(this, data);
@@ -125,7 +139,6 @@ public class PrintVisitor implements ParserVisitor {
         return data;
     }
 
-    @Override
     public Object visit(ASTmtsub node, Object data) {
         System.out.println(indentString() + node);
         ++indent;

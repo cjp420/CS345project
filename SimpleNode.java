@@ -9,6 +9,7 @@ class SimpleNode implements Node {
   protected Object value;
   protected Parser parser;
 
+
   public SimpleNode(int i) {
     id = i;
   }
@@ -42,6 +43,11 @@ class SimpleNode implements Node {
     return children[i];
   }
 
+
+  public Node[] getChildren(){
+    return children;
+  }
+
   public int jjtGetNumChildren() {
     return (children == null) ? 0 : children.length;
   }
@@ -60,6 +66,15 @@ class SimpleNode implements Node {
 {
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
+        children[i].jjtAccept(visitor, data);
+      }
+    }
+    return data;
+  }
+public Object childrenAcceptr(ParserVisitor visitor, Object data)
+{
+    if (children != null) {
+      for (int i = children.length - 1; i >= 0; --i) {
         children[i].jjtAccept(visitor, data);
       }
     }

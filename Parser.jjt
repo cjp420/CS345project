@@ -23,6 +23,7 @@ public class Parser {
    print.visit(root, data);
    EVisitor eprint = new EVisitor();
    eprint.visit(root, data, b);
+   eprint.printResult();
  }
 }
 
@@ -42,7 +43,7 @@ TOKEN:
 {
    < LPAR : "(" >
  | < RPAR : ")" >
- | < NUMBER : (["0"-"9"])+ | "-" (["0"-"9"])+ >
+ | < NUMBER : (["0"-"9"])* "." (["0"-"9"])+  | "-" (["0"-"9"])* "." (["0"-"9"])+ | (["0"-"9"])+ | "-" (["0"-"9"])+>
  | < LAMBDA : "lambda">
  | < LET : "let">
  | < ADD : "+">
@@ -70,43 +71,46 @@ TOKEN:
  < ERROR : ~[] >
 }
 
-String number():
+void number():
 {Token n;}
 {
-	n = <NUMBER> {jjtThis.setNum(Integer.parseInt(n.image));}
-	{ return "(num " + n.image+")"; } 
+	n = <NUMBER> {jjtThis.setNum(Float.parseFloat(n.image));}
 }
 
-String symbol():
+void symbol():
 {Token n;}
 {
 	n = <SYMBOL> {jjtThis.setName(n.image);}
-	{ return "(id '" + n.image+")"; }
 }
 
-String numexp() #void : 
+void numexp() #void : 
 {Token n; String r;}
-{
-	
-
-        LOOKAHEAD(2) <LPAR> Op()(symbol() | number() | numexp()) (symbol() | number() | numexp()) <RPAR>
-      |  <LPAR> apply() <RPAR>
+{	LOOKAHEAD(2) op() 
+      |  apply()
 }
 
-void op() :
-{}
+void op() : 
+{}	
 {
-         <ADD>  {jjtThis.setOp(0);}
+	<LPAR>
+	( <ADD>  {jjtThis.setOp(0);}
 	| <SUB> {jjtThis.setOp(1);}
 	| <DIV> {jjtThis.setOp(2);}
-	| <MUL> {jjtThis.setOp(3);}     
+	| <MUL> {jjtThis.setOp(3);}) 
+	(symbol() | number() | numexp()) (symbol() | number() | numexp())+
+	<RPAR>
 }
 
-void apply() :
+void apply() #App :
 {}
 {
-    symbol() (symbol() | number() | numexpr()) 
+    	<LPAR> 
+	symbol() (symbol() | number() | numexp())+ 
+	<RPAR>
 }
+
+
+
 
 void let() #FunctionApplication :
 {}
@@ -114,13 +118,14 @@ void let() #FunctionApplication :
   <LPAR>
   <LET>
   <LPAR>
-  <LPAR>
+  (<LPAR>
   //  A                  B
    symbol() (number() | lambda()) 
-  <RPAR>
+  <RPAR>)+
   <RPAR>
   //C
-  (let() | apply())
+  (LOOKAHEAD(2) apply() 
+	| let())
   <RPAR>
 }
 
@@ -130,25 +135,27 @@ void lambda() #Function :
  <LPAR>
  <LAMBDA>
  <LPAR>
- symbol()
+ (symbol())+
+
  <RPAR>
-   number()
+   (number()
  | numexp()
- | symbol()
+ | symbol())
+ <RPAR>
 }
 
 void application() :
 {}
 {
-    <LPAR> symbol() (number() | symbol()) <RPAR>
+    <LPAR> symbol() (number() | symbol())+ <RPAR>
 }
 
 void asub() :
 {}
 {
     LOOKAHEAD(4)
-    <LPAR> <ASUB> symbol() number() (asub() | mtsub()) <RPAR>
-  | <LPAR> <ASUB> symbol() <LPAR> closure() <RPAR> (asub() | mtsub()) <RPAR>
+    <LPAR> <ASUB> symbol() number() (LOOKAHEAD(2) asub() | mtsub()) <RPAR>
+  | <LPAR> <ASUB> symbol() <LPAR> closure() <RPAR> (LOOKAHEAD(2) asub() | mtsub()) <RPAR>
 }
 
 void mtsub() :
@@ -160,7 +167,7 @@ void mtsub() :
 void closure() :
 {}
 {
-    <CLOSURE> params() <LPAR> fbody() <RPAR> asub()
+    <CLOSURE> params() fbody() asub()
 }
 
 void params() :
@@ -197,7 +204,7 @@ void prog() :
  String s;
 }
 {
-    LOOKAHEAD(2) <LPAR> application() asub() <RPAR> 
+    LOOKAHEAD(2) application() asub()
   | let()
     
 }

@@ -13,7 +13,7 @@ public class ASTnumber extends SimpleNode {
         super(p, id);
     }
 
-    public void setNum(int i) {
+    public void setNum(float i) {
         num = i;
     }
 

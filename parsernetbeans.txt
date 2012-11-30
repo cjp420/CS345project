@@ -1,0 +1,8 @@
+FileInputStream is = null;
+        try {
+            is = new FileInputStream(new File("testa.txt"));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+   System.setIn(is);
+   

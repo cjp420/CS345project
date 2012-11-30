@@ -31,19 +31,21 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int ASUBT = 16;
   /** RegularExpression Id. */
-  int AMUL = 17;
+  int APP = 17;
   /** RegularExpression Id. */
-  int ADIV = 18;
+  int AMUL = 18;
   /** RegularExpression Id. */
-  int ASUB = 19;
+  int ADIV = 19;
   /** RegularExpression Id. */
-  int CLOSURE = 20;
+  int ASUB = 20;
   /** RegularExpression Id. */
-  int MTSUB = 21;
+  int CLOSURE = 21;
   /** RegularExpression Id. */
-  int SYMBOL = 22;
+  int MTSUB = 22;
   /** RegularExpression Id. */
-  int ERROR = 23;
+  int SYMBOL = 23;
+  /** RegularExpression Id. */
+  int ERROR = 24;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -67,6 +69,7 @@ public interface ParserConstants {
     "\"/\"",
     "\"add\"",
     "\"sub\"",
+    "\"app\"",
     "\"mul\"",
     "\"div\"",
     "\"aSub\"",
